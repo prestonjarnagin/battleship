@@ -1,11 +1,14 @@
 require './lib/slot'
+require 'pry'
 
 class Board
 
   attr_reader :slots
+              :ships
 
   def initialize
     @slots = generate_slots
+    @ships = []
   end
 
     def generate_slots(columns = 4, rows = 4)
@@ -31,5 +34,10 @@ class Board
       return row
     end
 
+    def place_ship(yx, vh, length)
+      # slots =
+      # @ships << ship = Ship.new(@slots[y][x])
+      # binding.pry
+    end
 
 end
