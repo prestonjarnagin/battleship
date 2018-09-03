@@ -26,4 +26,9 @@ class BoardTest < Minitest::Test
     refute @board.slots[3][4]
   end
 
+  def test_it_can_place_a_ship
+    @board.place_ship(0 ,0 , true, 3)
+    assert_instance_of Ship, @board.ships[0]
+  end
+
 end

@@ -1,0 +1,21 @@
+(Edited from thesprucecrafts.com)
+
+Battleship is a war-themed board game for two players in which the opponents try to guess the location of the other's various ships.
+
+The object of the game is to guess the location of the ships each player hides on a grid containing vertical and horizontal space coordinates. Players take turns guessing row and column coordinates on the other player's grid in an attempt to identify a square that contains a ship.
+
+The goal of the game is to sink all of the opponent's ships by correctly guessing their location on the grid.
+
+Setting Up the Game
+In this version of the game each player receives a 2 ships to place on their grid. One ship is 3 long, the other is 2 long
+
+Each opponent secretly positions his own ships. Each ship must be placed horizontally or vertically—not diagonally—across grid spaces, and the ships can't hang off the grid. Ships can touch each other, but they can't occupy the same grid space. You cannot change the position of the ships after the game begins.
+
+Basic Gameplay
+Players take turns firing shots (by entering a grid coordinate) to attack enemy ships.
+
+On your turn, enter a letter and a number that identifies a row and column on your target grid. Your opponent checks that coordinate on his own grid and responds "miss" if there is no ship there, or "hit" if you have correctly guessed a space that is occupied by one of his ships.
+
+Each of your shots (guesses) is recorded on your grid as a hit (H) or a miss (M). As the game proceeds, the hits will gradually identify the size and location of your opponent's ships.
+
+The first player to sink all of his opponent's ships wins the game.
