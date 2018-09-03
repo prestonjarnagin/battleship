@@ -1,3 +1,5 @@
+require './lib/game'
+
 p "Welcome to BATTLESHIP"
 selection = ""
 while selection != 'p' || selection != 'q' || selection != 'r'
@@ -9,6 +11,5 @@ selection = gets.chomp
     puts File.read('./instructions.txt')
   elsif selection == 'p'
     game = Game.new
-    game.play
   end
 end
