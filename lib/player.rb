@@ -23,22 +23,19 @@ class Player
     if hit
       hit_sequence(enemy_board)
     else
-      "Miss"
+      p "Miss"
     end
   end
 
   def hit_sequence(enemy_board)
-    # Print ship hit
-    # If all slots on ship hit, trigger sink_sequence
     sunk = enemy_board.ships.any? do |ship|
       ship.sunk?
     end
     p "#{@name} hit enemy ship"
-    sink_sequence if sunk
-
+    sink_sequence(enemy_board) if sunk
   end
 
-  def sink_sequence
+  def sink_sequence(enemy_board)
     p "#{@name} sunk an enemy ship"
     endgame = enemy_board.ships.all? do |ship|
       ship.sunk?

@@ -17,6 +17,8 @@ selection = gets.chomp
 
     while !game.player.victory || !game.computer.victory
       game.main_phase
+      print
+      print
     end
 
   end

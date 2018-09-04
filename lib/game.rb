@@ -31,25 +31,22 @@ class Game
 
   def draw_board
     board = []
-
-    index = 0
-    while index < 4
+    @computer.board.slots.each do |row|
       this_row = []
+      row.each do |slot|
 
-      @computer.board.slots[index].each do |slot|
-        if slot.guessed? && @computer.board.all_ship_slots.include?(slot)
-          this_row << " H "
-        elsif slot.guessed?
-          this_row << " M "
+        if slot.guessed?
+          if @computer.board.ships.any? {|ship| ship.slots.include?(slot)}
+            this_row << " H "
+          else
+            this_row << " M "
+          end
         else
           this_row << " . "
         end
-        board << this_row
       end
-      index += 1
-
+      board << this_row
     end
-
     p "========="
     p ".   1   2   3   4"
     p "A " + board[0].join(" ")
@@ -57,7 +54,6 @@ class Game
     p "C " + board[2].join(" ")
     p "D " + board[3].join(" ")
     p "========="
-
   end
 
   def computer_setup

@@ -22,7 +22,6 @@ class Board
     return board
   end
 
-
   def make_ship(args)
     slots = []
     if args[:vertical]
@@ -54,7 +53,7 @@ class Board
       end
       i += 1
     end
-    slots
+    return slots
   end
 
   def all_ship_slots
@@ -64,8 +63,8 @@ class Board
         slots << slot
       end
     end
+    return slots
   end
-
 
   private
   def generate_row(length)
@@ -77,5 +76,4 @@ class Board
     end
     return row
   end
-
 end
