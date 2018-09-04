@@ -11,5 +11,7 @@ selection = gets.chomp
     puts File.read('./instructions.txt')
   elsif selection == 'p'
     game = Game.new
+    game.computer_setup
+    game.player_setup
   end
 end

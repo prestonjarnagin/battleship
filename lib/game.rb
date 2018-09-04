@@ -8,7 +8,6 @@ class Game
   def initialize
     @cpu_board = Board.new
     @player_board = Board.new
-    computer_setup
   end
 
   def computer_setup
@@ -27,7 +26,9 @@ class Game
       end
       valid_3 = valid_ship_placement?(cordinates)
     end
-    @cpu_board.place_ship(y,x,vertical,3)
+    args = {y:y,x:x,vertical:vertical,length:3}
+    ship = @cpu_board.make_ship(args)
+    @cpu_board.place_ship(ship)
 
     #Validate and place 2 long ship
     while !valid_2
@@ -50,23 +51,80 @@ class Game
         end
       end
     end
-    @cpu_board.place_ship(y,x,vertical,2)
+    args = {y:y,x:x,vertical:vertical,length:2}
+    ship = @cpu_board.make_ship(args)
+    @cpu_board.place_ship(ship)
+    p "I have laid out my ships on the grid."
 
   end
 
-  def user_setup
-    p "Enter the squares for the two-unit ship:
-    You now need to layout your two ships.
-    The first is two units long and the
-    second is three units long.
-    The grid has A1 at the top left and D4 at the bottom right."
-    entry = translate_cordinate(gets.chomp)
-    while !entry
-      p "Invalid cordinate"
-      entry = translate_cordinate(gets.chomp)
-    end
+  def player_setup
+    p "You now need to layout your two ships."
+    p "The first is two units long and the"
+    p "second is three units long."
+    p "The grid has A1 at the top left and D4 at the bottom right."
 
-    @board.place_ship(entry)
+    collide = true
+    while collide
+      p "Enter the squares for the two-unit ship:"
+      ship_2_args = interpret_cordinate_string(gets.chomp, 2)
+      while !ship_2_args
+        p "Entry invalid. Enter the squares for the two-unit ship:"
+        ship_2_args = interpret_cordinate_string(gets.chomp, 2)
+      end
+      p "Enter the squares for the three-unit ship:"
+      ship_3_args = interpret_cordinate_string(gets.chomp, 3)
+      while !ship_3_args
+        p "Entry invalid. Enter the squares for the three-unit ship:"
+        ship_3_args = interpret_cordinate_string(gets.chomp, 3)
+      end
+      ship_2 = @player_board.make_ship(ship_2_args)
+      ship_3 = @player_board.make_ship(ship_3_args)
+      if ships_collide?(ship_2, ship_3)
+        p "You've placed your ships on top of one another"
+      else
+        collide = false
+      end
+    end
+    @player_board.place_ship(ship_2)
+    @player_board.place_ship(ship_3)
+  end
+
+
+
+  def ships_collide?(ship_1, ship_2)
+    ship_1.slots.any? { |slot| ship_2.slots.include?(slot)}
+  end
+
+
+  def interpret_cordinate_string(input, expected_length)
+    #Return a hash of args to build a ship, or nil if
+    #input is invalid
+    input = input.split
+    if input.length != expected_length
+      return nil
+    end
+    input.map! { |cordinate| translate_cordinate(cordinate)}
+    if !valid_ship_placement?(input)
+      return nil
+    end
+    if input[0][0] == input[1][0]
+      vertical = false
+      min = input.min_by { |cordinate| cordinate[1]}
+      x = min[1]
+      y = min[0]
+    else
+      vertical = true
+      min = input.min_by { |cordinate| cordinate[0]}
+      x = min[1]
+      y = min[0]
+    end
+    args = {
+      x: x,
+      y: y,
+      vertical: vertical,
+      length: expected_length}
+    return args
   end
 
   def translate_cordinate(cordinate_string)
@@ -123,6 +181,7 @@ class Game
     end
     return false
   end
+
 
 
 end

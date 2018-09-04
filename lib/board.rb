@@ -35,22 +35,26 @@ class Board
     return row
   end
 
-  def place_ship(y, x, vertical, length)
+  def make_ship(args)
     slots = []
-    if vertical
+    if args[:vertical]
       i = 0
-      while i < (length)
-        slots << @slots[y+i][x]
+      while i < (args[:length])
+        slots << @slots[args[:y]+i][args[:x]]
         i += 1
       end
     else
       i = 0
-      while i < (length)
-        slots << @slots[y][x+1]
+      while i < (args[:length])
+        slots << @slots[args[:y]][args[:x]+i]
         i += 1
       end
     end
-    @ships << Ship.new(slots)
+    return Ship.new(slots)
+  end
+
+  def place_ship(ship)
+    @ships << ship
   end
 
 end

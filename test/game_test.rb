@@ -1,6 +1,8 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/game'
+require './lib/board'
+require 'pry'
 
 class GameTest < Minitest::Test
 
@@ -68,6 +70,26 @@ class GameTest < Minitest::Test
     assert_equal 0, @game.cpu_board.ships.count
     @game.computer_setup
     assert_equal 2, @game.cpu_board.ships.count
+  end
+
+  def test_it_can_interpret_player_input
+    args = @game.interpret_cordinate_string("a1 a2",2)
+    expected = {y:0, x:0, vertical:false, length:2}
+    assert_equal expected, args
+
+    args = @game.interpret_cordinate_string("c3 b3 d3", 3)
+    expected = {y:1, x:2, vertical:true, length:3}
+    assert_equal expected, args
+  end
+
+  def test_it_can_test_if_ship_objects_overlap
+    board = Board.new
+    ship_1 = board.make_ship({y:0,x:0,vertical:true,length:2})
+    ship_2 = board.make_ship({y:1,x:0,vertical:false,length:3})
+    assert @game.ships_collide?(ship_1,ship_2)
+
+    ship_2 = board.make_ship({y:1,x:1,vertical:false,length:3})
+    refute @game.ships_collide?(ship_1,ship_2)
   end
 
 
