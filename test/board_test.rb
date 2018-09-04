@@ -1,6 +1,9 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/board'
+require './test/test_helper'
+require 'simplecov'
+SimpleCov.start
 
 class BoardTest < Minitest::Test
 
@@ -38,6 +41,11 @@ class BoardTest < Minitest::Test
     ship = @board.make_ship(args)
     @board.place_ship(ship)
     assert_equal 1, @board.ships.length
+  end
+
+  def test_it_can_return_continuous_slots
+    assert_equal 16, @board.continuous_slots.length
+    assert_equal @board.slots[0][0], @board.continuous_slots[0]
   end
 
 end

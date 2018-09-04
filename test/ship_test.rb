@@ -1,16 +1,19 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/ship'
-require './lib/slots'
+require './lib/slot'
+require './test/test_helper'
+require 'simplecov'
+SimpleCov.start
 
 class ShipTest < Minitest::Test
 
   def setup
-    slot1 = Slot.new
-    slot2 = slot.new
-    slot3 = slot.new
-    @slots = [slot1, slot2, slot3]
-    @ship = Ship.new(slots)
+    @slot1 = Slot.new
+    @slot2 = Slot.new
+    @slot3 = Slot.new
+    @slots = [@slot1, @slot2, @slot3]
+    @ship = Ship.new(@slots)
   end
 
   def test_it_exists
@@ -23,6 +26,13 @@ class ShipTest < Minitest::Test
 
   def test_it_has_slots
     assert_equal @slots, @ship.slots
+  end
+
+  def test_it_knows_if_its_sunk
+    @slot1.guess
+    @slot2.guess
+    @slot3.guess
+    assert @ship.sunk?
   end
 
 end

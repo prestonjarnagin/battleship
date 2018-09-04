@@ -1,13 +1,43 @@
 require './lib/board'
 require 'pry'
+require './lib/player'
 
 class Game
-    attr_reader :cpu_board,
-                :player_board
+    attr_reader :computer,
+                :player
 
   def initialize
-    @cpu_board = Board.new
-    @player_board = Board.new
+    @computer = Player.new("Computer")
+    @player = Player.new("Player")
+  end
+
+  def main_phase
+    draw_board
+    p "Enter cordinates to take a shot"
+    shot = gets.chomp
+    shot = translate_cordinate(shot)
+    while shot == nil
+      p "Cordinates invalid. Try again"
+      shot = gets.chomp
+      shot = translate_cordinate(shot)
+    end
+    @player.take_shot(shot, @computer.board)
+
+    if !@player.victory
+      shot = [rand(0..3),rand(0..3)]
+      @computer.take_shot(shot, @player.board)
+    end
+  end
+
+  def draw_board
+
+    guessmap = @computer.board.slots.map do |row|
+      row.map do |item|
+        item.guessed?
+      end
+    end
+    binding.pry
+
   end
 
   def computer_setup
@@ -27,8 +57,8 @@ class Game
       valid_3 = valid_ship_placement?(cordinates)
     end
     args = {y:y,x:x,vertical:vertical,length:3}
-    ship = @cpu_board.make_ship(args)
-    @cpu_board.place_ship(ship)
+    ship = @computer.board.make_ship(args)
+    @computer.board.place_ship(ship)
 
     #Validate and place 2 long ship
     while !valid_2
@@ -44,21 +74,22 @@ class Game
       if valid_ship_placement?(cordinates)
         #Check ships arent overlapping
         cordinates.each do |cordinate|
-          slot = @cpu_board.slots[cordinate[0]][cordinate[1]]
-          if @cpu_board.ships[0].slots.include?(slot)
+          slot = @computer.board.slots[cordinate[0]][cordinate[1]]
+          if @computer.board.ships[0].slots.include?(slot)
             valid_2 = true
           end
         end
       end
     end
     args = {y:y,x:x,vertical:vertical,length:2}
-    ship = @cpu_board.make_ship(args)
-    @cpu_board.place_ship(ship)
+    ship = @computer.board.make_ship(args)
+    @computer.board.place_ship(ship)
     p "I have laid out my ships on the grid."
 
   end
 
   def player_setup
+
     p "You now need to layout your two ships."
     p "The first is two units long and the"
     p "second is three units long."
@@ -78,16 +109,16 @@ class Game
         p "Entry invalid. Enter the squares for the three-unit ship:"
         ship_3_args = interpret_cordinate_string(gets.chomp, 3)
       end
-      ship_2 = @player_board.make_ship(ship_2_args)
-      ship_3 = @player_board.make_ship(ship_3_args)
+      ship_2 = @player.board.make_ship(ship_2_args)
+      ship_3 = @player.board.make_ship(ship_3_args)
       if ships_collide?(ship_2, ship_3)
         p "You've placed your ships on top of one another"
       else
         collide = false
       end
     end
-    @player_board.place_ship(ship_2)
-    @player_board.place_ship(ship_3)
+    @player.board.place_ship(ship_2)
+    @player.board.place_ship(ship_3)
   end
 
 
@@ -133,7 +164,7 @@ class Game
     end
     y = cordinate_string[0].upcase.ord - 65
     x = cordinate_string[1].to_i - 1
-    if y >= @player_board.slots.length || x >= @player_board.slots[0].length
+    if y >= @player.board.slots.length || x >= @player.board.slots[0].length
       return nil
     end
     return [y,x]
@@ -151,9 +182,9 @@ class Game
 
     #Ship doesnt hang off grid
     cordinates.each do |cordinate|
-      if cordinate[0] > @player_board.slots.length - 1
+      if cordinate[0] > @player.board.slots.length - 1
         return false
-      elsif cordinate[1] > @player_board.slots[0].length - 1
+      elsif cordinate[1] > @player.board.slots[0].length - 1
         return false
       end
     end

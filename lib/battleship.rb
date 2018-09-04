@@ -1,4 +1,5 @@
 require './lib/game'
+require 'pry'
 
 p "Welcome to BATTLESHIP"
 selection = ""
@@ -13,5 +14,10 @@ selection = gets.chomp
     game = Game.new
     game.computer_setup
     game.player_setup
+
+    while !game.player.victory || !game.computer.victory
+      game.main_phase
+    end
+
   end
 end

@@ -1,6 +1,9 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/slot'
+require './test/test_helper'
+require 'simplecov'
+SimpleCov.start
 
 class SlotTest < Minitest::Test
 
@@ -20,6 +23,4 @@ class SlotTest < Minitest::Test
     @slot.guess
     assert @slot.guessed?
   end
-
-
 end
