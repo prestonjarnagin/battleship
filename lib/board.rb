@@ -69,4 +69,13 @@ class Board
     slots
   end
 
+  def all_ship_slots
+    slots = []
+    ships.each do |ship|
+      ship.slots.each do |slot|
+        slots << slot
+      end
+    end
+  end
+
 end

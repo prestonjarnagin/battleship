@@ -3,6 +3,9 @@ require 'minitest/pride'
 require './lib/game'
 require './lib/board'
 require 'pry'
+require './test/test_helper'
+require 'simplecov'
+SimpleCov.start
 
 class GameTest < Minitest::Test
 
@@ -21,6 +24,10 @@ class GameTest < Minitest::Test
 
     expected = [3,3]
     actual = @game.translate_cordinate("D4")
+    assert_equal expected, actual
+
+    expected = [3,3]
+    actual = @game.translate_cordinate("d4")
     assert_equal expected, actual
   end
 
@@ -67,9 +74,9 @@ class GameTest < Minitest::Test
   end
 
   def test_can_setup_computer_player_board
-    assert_equal 0, @game.cpu_board.ships.count
+    assert_equal 0, @game.computer.board.ships.count
     @game.computer_setup
-    assert_equal 2, @game.cpu_board.ships.count
+    assert_equal 2, @game.computer.board.ships.count
   end
 
   def test_it_can_interpret_player_input
@@ -91,7 +98,5 @@ class GameTest < Minitest::Test
     ship_2 = board.make_ship({y:1,x:1,vertical:false,length:3})
     refute @game.ships_collide?(ship_1,ship_2)
   end
-
-
 
 end

@@ -10,4 +10,10 @@ class Ship
     @slots.length
   end
 
+  def sunk?
+    @slots.all? do |slot|
+      slot.guessed?
+    end
+  end
+
 end
