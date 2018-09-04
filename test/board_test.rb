@@ -26,9 +26,18 @@ class BoardTest < Minitest::Test
     refute @board.slots[3][4]
   end
 
-  def test_it_can_place_a_ship
-    @board.place_ship(0 ,0 , true, 3)
-    assert_instance_of Ship, @board.ships[0]
+  def test_it_can_create_a_ship
+    args = {x:0,y:0,vertical:true,length:3}
+    ship = @board.make_ship(args)
+    assert_instance_of Ship, ship
+    assert_instance_of Slot, ship.slots[0]
+  end
+
+  def test_it_can_save_created_ships
+    args = {x:0,y:0,vertical:true,length:3}
+    ship = @board.make_ship(args)
+    @board.place_ship(ship)
+    assert_equal 1, @board.ships.length
   end
 
 end
