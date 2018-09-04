@@ -30,14 +30,30 @@ class Game
   end
 
   def draw_board
+    board = []
+    @computer.board.slots.each do |row|
+      this_row = []
+      row.each do |slot|
 
-    guessmap = @computer.board.slots.map do |row|
-      row.map do |item|
-        item.guessed?
+        if slot.guessed?
+          if @computer.board.ships.any? {|ship| ship.slots.include?(slot)}
+            this_row << " H "
+          else
+            this_row << " M "
+          end
+        else
+          this_row << " . "
+        end
       end
+      board << this_row
     end
-    binding.pry
-
+    p "========="
+    p ".   1   2   3   4"
+    p "A " + board[0].join(" ")
+    p "B " + board[1].join(" ")
+    p "C " + board[2].join(" ")
+    p "D " + board[3].join(" ")
+    p "========="
   end
 
   def computer_setup

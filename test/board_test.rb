@@ -15,7 +15,8 @@ class BoardTest < Minitest::Test
     assert_instance_of Board, @board
   end
 
-  def test_it_has_a_grid_of_slots
+
+  def test_it_initializes_with_a_grid_of_slots_objects
     @board.slots.each do |column|
       column.each do |item|
         assert_instance_of Slot, item

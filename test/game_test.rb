@@ -99,4 +99,5 @@ class GameTest < Minitest::Test
     refute @game.ships_collide?(ship_1,ship_2)
   end
 
+
 end
