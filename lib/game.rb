@@ -30,13 +30,33 @@ class Game
   end
 
   def draw_board
+    board = []
 
-    guessmap = @computer.board.slots.map do |row|
-      row.map do |item|
-        item.guessed?
+    index = 0
+    while index < 4
+      this_row = []
+
+      @computer.board.slots[index].each do |slot|
+        if slot.guessed? && @computer.board.all_ship_slots.include?(slot)
+          this_row << " H "
+        elsif slot.guessed?
+          this_row << " M "
+        else
+          this_row << " . "
+        end
+        board << this_row
       end
+      index += 1
+
     end
-    binding.pry
+
+    p "========="
+    p ".   1   2   3   4"
+    p "A " + board[0].join(" ")
+    p "B " + board[1].join(" ")
+    p "C " + board[2].join(" ")
+    p "D " + board[3].join(" ")
+    p "========="
 
   end
 

@@ -12,28 +12,16 @@ class Board
     @ships = []
   end
 
-  def generate_slots(columns = 4, rows = 4)
-    # Keep in mind this method will generate a grid that is accessed with
-    # a [y][x] pattern, since the spec specifies lookup like "A1", where
-    # "A" is the y cordinate
+  def generate_slots
     board = []
     i = 0
-    while i < rows
-      board << generate_row(columns)
+    while i < 4
+      board << generate_row(4)
       i += 1
     end
     return board
   end
 
-  def generate_row(length)
-    i = 0
-    row = []
-    while i < length
-      row << Slot.new
-      i += 1
-    end
-    return row
-  end
 
   def make_ship(args)
     slots = []
@@ -76,6 +64,18 @@ class Board
         slots << slot
       end
     end
+  end
+
+
+  private
+  def generate_row(length)
+    i = 0
+    row = []
+    while i < length
+      row << Slot.new
+      i += 1
+    end
+    return row
   end
 
 end

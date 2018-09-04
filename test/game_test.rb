@@ -99,4 +99,8 @@ class GameTest < Minitest::Test
     refute @game.ships_collide?(ship_1,ship_2)
   end
 
+  def test_main_phase
+    @game.main_phase
+  end
+
 end
