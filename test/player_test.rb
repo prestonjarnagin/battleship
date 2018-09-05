@@ -21,8 +21,4 @@ class PlayerTest < Minitest::Test
    assert @player.board.slots[0][0].guessed?
   end
 
-  def test_it_can_sink_a_ship
-
-  end
-
 end

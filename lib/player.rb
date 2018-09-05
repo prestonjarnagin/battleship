@@ -23,7 +23,7 @@ class Player
     if hit
       hit_sequence(enemy_board)
     else
-      p "Miss"
+      p @name + ": Miss"
     end
   end
 
@@ -31,7 +31,7 @@ class Player
     sunk = enemy_board.ships.any? do |ship|
       ship.sunk?
     end
-    p "#{@name} hit enemy ship"
+    p "#{@name}: Hit!"
     sink_sequence(enemy_board) if sunk
   end
 
@@ -40,7 +40,12 @@ class Player
     endgame = enemy_board.ships.all? do |ship|
       ship.sunk?
     end
-    trigger_endgame if endgame
+
+    if endgame
+      binding.pry
+      trigger_endgame
+
+    end
   end
 
   def trigger_endgame

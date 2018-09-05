@@ -97,6 +97,10 @@ class GameTest < Minitest::Test
 
     ship_2 = board.make_ship({y:1,x:1,vertical:false,length:3})
     refute @game.ships_collide?(ship_1,ship_2)
+
+    ship_1 = board.make_ship({y:1,x:1,vertical:true,length:3})
+    ship_2 = board.make_ship({y:2,x:1,vertical:true,length:2})
+    assert @game.ships_collide?(ship_1,ship_2)
   end
 
 

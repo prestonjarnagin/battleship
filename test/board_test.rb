@@ -35,6 +35,20 @@ class BoardTest < Minitest::Test
     ship = @board.make_ship(args)
     assert_instance_of Ship, ship
     assert_instance_of Slot, ship.slots[0]
+    assert_instance_of Slot, ship.slots[1]
+    assert_instance_of Slot, ship.slots[2]
+
+    args = {x:2,y:2,vertical:true,length:2}
+    ship = @board.make_ship(args)
+    assert_instance_of Slot, ship.slots[0]
+    assert_instance_of Slot, ship.slots[1]
+  end
+
+  def test_created_ships_contain_unique_slots
+    args = {x:0,y:0,vertical:true,length:3}
+    ship = @board.make_ship(args)
+    refute ship.slots[0] == ship.slots[1]
+    refute ship.slots[1] == ship.slots[2]
   end
 
   def test_it_can_save_created_ships

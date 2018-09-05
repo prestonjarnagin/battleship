@@ -21,6 +21,7 @@ class Game
       shot = gets.chomp
       shot = translate_cordinate(shot)
     end
+    puts ""
     @player.take_shot(shot, @computer.board)
 
     if !@player.victory
@@ -228,7 +229,5 @@ class Game
     end
     return false
   end
-
-
 
 end
