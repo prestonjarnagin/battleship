@@ -58,9 +58,4 @@ class BoardTest < Minitest::Test
     assert_equal 1, @board.ships.length
   end
 
-  def test_it_can_return_continuous_slots
-    assert_equal 16, @board.continuous_slots.length
-    assert_equal @board.slots[0][0], @board.continuous_slots[0]
-  end
-
 end
