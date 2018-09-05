@@ -12,22 +12,35 @@ class Game
   end
 
   def main_phase
-    draw_board
-    p "Enter cordinates to take a shot"
-    shot = gets.chomp
-    shot = translate_cordinate(shot)
-    while shot == nil
-      p "Cordinates invalid. Try again"
+
+    while !@player.victory && !@computer.victory
+      draw_board
+      p "Enter cordinates to take a shot"
       shot = gets.chomp
       shot = translate_cordinate(shot)
-    end
-    puts ""
-    @player.take_shot(shot, @computer.board)
+      while shot == nil
+        p "Cordinates invalid. Try again"
+        shot = gets.chomp
+        shot = translate_cordinate(shot)
+      end
+      @player.take_shot(shot, @computer.board)
 
-    if !@player.victory
-      shot = [rand(0..3),rand(0..3)]
-      @computer.take_shot(shot, @player.board)
+      if !@player.victory
+        shot = [rand(0..3),rand(0..3)]
+        @computer.take_shot(shot, @player.board)
+      end
     end
+
+    if @player.victory
+      p "=+=+=+=+=+=+="
+      p "You've Won!"
+      p "=+=+=+=+=+=+="
+    else
+      p "=+=+=+=+=+=+="
+      p "You've Lost"
+      p "=+=+=+=+=+=+="
+    end
+
   end
 
   def draw_board
@@ -61,48 +74,46 @@ class Game
     valid_3 = false
     valid_2 = false
 
-    #Validate & place 3 long ship
-    while !valid_3
-      y = rand(0..3)
-      x = rand(0..3)
-      vertical = [true, false].sample
-      if vertical
-        cordinates = [y,x],[y+1,x],[y+2,x]
-      else
-        cordinates = [y,x],[y,x+1],[y,x+2]
-      end
-      valid_3 = valid_ship_placement?(cordinates)
-    end
-    args = {y:y,x:x,vertical:vertical,length:3}
-    ship = @computer.board.make_ship(args)
-    @computer.board.place_ship(ship)
 
-    #Validate and place 2 long ship
-    while !valid_2
-      y = rand(0..3)
-      x = rand(0..3)
-      vertical = [true, false].sample
-      if vertical
-        cordinates = [y,x],[y+1,x]
-      else
-        cordinates = [y,x],[y,x+1]
+      #Create, validate, and place 3 long ship
+      while !valid_3
+        y = rand(0..3)
+        x = rand(0..3)
+        vertical = [true, false].sample
+        if vertical
+          cordinates = [y,x],[y+1,x],[y+2,x]
+        else
+          cordinates = [y,x],[y,x+1],[y,x+2]
+        end
+        valid_3 = valid_ship_placement?(cordinates)
       end
+      args = {y:y,x:x,vertical:vertical,length:3}
+      ship_3 = @computer.board.make_ship(args)
+      @computer.board.place_ship(ship_3)
 
-      if valid_ship_placement?(cordinates)
-        #Check ships arent overlapping
-        cordinates.each do |cordinate|
-          slot = @computer.board.slots[cordinate[0]][cordinate[1]]
-          if @computer.board.ships[0].slots.include?(slot)
-            valid_2 = true
+      #Create and validate 2 long ship
+
+      ships_overlap = true
+      while ships_overlap
+        while !valid_2
+          y = rand(0..3)
+          x = rand(0..3)
+          vertical = [true, false].sample
+          if vertical
+            cordinates = [y,x],[y+1,x]
+          else
+            cordinates = [y,x],[y,x+1]
           end
+          valid_2 = valid_ship_placement?(cordinates)
+        end
+        args = {y:y,x:x,vertical:vertical,length:2}
+        ship_2 = @computer.board.make_ship(args)
+        if !ships_collide?(ship_2,ship_3)
+          ships_overlap = false
         end
       end
-    end
-    args = {y:y,x:x,vertical:vertical,length:2}
-    ship = @computer.board.make_ship(args)
-    @computer.board.place_ship(ship)
+    @computer.board.place_ship(ship_2)
     p "I have laid out my ships on the grid."
-
   end
 
   def player_setup
@@ -120,12 +131,14 @@ class Game
         p "Entry invalid. Enter the squares for the two-unit ship:"
         ship_2_args = interpret_cordinate_string(gets.chomp, 2)
       end
+
       p "Enter the squares for the three-unit ship:"
       ship_3_args = interpret_cordinate_string(gets.chomp, 3)
       while !ship_3_args
         p "Entry invalid. Enter the squares for the three-unit ship:"
         ship_3_args = interpret_cordinate_string(gets.chomp, 3)
       end
+
       ship_2 = @player.board.make_ship(ship_2_args)
       ship_3 = @player.board.make_ship(ship_3_args)
       if ships_collide?(ship_2, ship_3)
@@ -138,12 +151,23 @@ class Game
     @player.board.place_ship(ship_3)
   end
 
-
-
   def ships_collide?(ship_1, ship_2)
     ship_1.slots.any? { |slot| ship_2.slots.include?(slot)}
   end
 
+
+
+  def translate_cordinate(cordinate_string)
+    if cordinate_string.length > 2
+      return nil
+    end
+    y = cordinate_string[0].upcase.ord - 65
+    x = cordinate_string[1].to_i - 1
+    if y >= @player.board.slots.length || x >= @player.board.slots[0].length
+      return nil
+    end
+    return [y,x]
+  end
 
   def interpret_cordinate_string(input, expected_length)
     #Return a hash of args to build a ship, or nil if
@@ -173,18 +197,6 @@ class Game
       vertical: vertical,
       length: expected_length}
     return args
-  end
-
-  def translate_cordinate(cordinate_string)
-    if cordinate_string.length > 2
-      return nil
-    end
-    y = cordinate_string[0].upcase.ord - 65
-    x = cordinate_string[1].to_i - 1
-    if y >= @player.board.slots.length || x >= @player.board.slots[0].length
-      return nil
-    end
-    return [y,x]
   end
 
   def valid_ship_placement?(cordinates)
