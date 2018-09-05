@@ -44,18 +44,6 @@ class Board
     @ships << ship
   end
 
-  def continuous_slots
-    i = 0
-    slots = []
-    while i < @slots.length
-      @slots[i].each do |slot|
-        slots << slot
-      end
-      i += 1
-    end
-    return slots
-  end
-
   def all_ship_slots
     slots = []
     ships.each do |ship|
