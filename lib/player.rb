@@ -13,9 +13,6 @@ class Player
 
   def take_shot(cordinate, enemy_board)
     guessed_slot = enemy_board.slots[cordinate[0]][cordinate[1]]
-    #TODO You've already guessed this slot
-    #TODO Try again
-
     guessed_slot.guess
     hit = enemy_board.ships.any? do |ship|
       ship.slots.include?(guessed_slot)
@@ -42,9 +39,7 @@ class Player
     end
 
     if endgame
-      binding.pry
       trigger_endgame
-
     end
   end
 

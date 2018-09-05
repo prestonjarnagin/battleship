@@ -20,10 +20,6 @@ class ShipTest < Minitest::Test
     assert_instance_of Ship, @ship
   end
 
-  def test_it_has_length
-    assert_equal 3, @ship.length
-  end
-
   def test_it_has_slots
     assert_equal @slots, @ship.slots
   end
