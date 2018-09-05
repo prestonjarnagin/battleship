@@ -3,8 +3,6 @@ require 'minitest/pride'
 require './lib/ship'
 require './lib/slot'
 require './test/test_helper'
-require 'simplecov'
-SimpleCov.start
 
 class ShipTest < Minitest::Test
 

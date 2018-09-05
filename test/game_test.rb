@@ -1,11 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/game'
-require './lib/board'
-require 'pry'
 require './test/test_helper'
-require 'simplecov'
-SimpleCov.start
 
 class GameTest < Minitest::Test
 

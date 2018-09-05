@@ -1,5 +1,4 @@
 require './lib/board'
-require 'pry'
 require './lib/player'
 
 class Game
@@ -15,11 +14,11 @@ class Game
 
     while !@player.victory && !@computer.victory
       draw_board
-      p "Enter cordinates to take a shot"
+      puts "Enter cordinates to take a shot"
       shot = gets.chomp
       shot = translate_cordinate(shot)
       while shot == nil
-        p "Cordinates invalid. Try again"
+        puts "Cordinates invalid. Try again"
         shot = gets.chomp
         shot = translate_cordinate(shot)
       end
@@ -32,117 +31,97 @@ class Game
     end
 
     if @player.victory
-      p "=+=+=+=+=+=+="
-      p "You've Won!"
-      p "=+=+=+=+=+=+="
+      draw_win
     else
-      p "=+=+=+=+=+=+="
-      p "You've Lost"
-      p "=+=+=+=+=+=+="
+      draw_loss
     end
-
   end
 
   def draw_board
     board = []
-    @computer.board.slots.each do |row|
-      this_row = []
-      row.each do |slot|
-
-        if slot.guessed?
-          if @computer.board.ships.any? {|ship| ship.slots.include?(slot)}
-            this_row << " H "
-          else
-            this_row << " M "
-          end
-        else
-          this_row << " . "
-        end
-      end
-      board << this_row
-    end
-    p "========="
-    p ".   1   2   3   4"
-    p "A " + board[0].join(" ")
-    p "B " + board[1].join(" ")
-    p "C " + board[2].join(" ")
-    p "D " + board[3].join(" ")
-    p "========="
+    generate_display_symbols(board)
+    draw_image(board)
   end
 
   def computer_setup
     valid_3 = false
     valid_2 = false
 
+      ship_3 = generate_3_long_ship(valid_3)
+      generate_2_long_ship(ship_3,valid_2)
 
-      #Create, validate, and place 3 long ship
-      while !valid_3
+    puts "I have laid out my ships on the grid."
+  end
+
+  def generate_3_long_ship(valid_3)
+    #Create, validate, and place 3 long ship
+    while !valid_3
+      y = rand(0..3)
+      x = rand(0..3)
+      vertical = [true, false].sample
+      if vertical
+        cordinates = [y,x],[y+1,x],[y+2,x]
+      else
+        cordinates = [y,x],[y,x+1],[y,x+2]
+      end
+      valid_3 = valid_ship_placement?(cordinates)
+    end
+    args = {y:y,x:x,vertical:vertical,length:3}
+    ship_3 = @computer.board.make_ship(args)
+    @computer.board.place_ship(ship_3)
+    return ship_3
+  end
+
+  def generate_2_long_ship(ship_3, valid_2)
+    ships_overlap = true
+    while ships_overlap
+      while !valid_2
         y = rand(0..3)
         x = rand(0..3)
         vertical = [true, false].sample
         if vertical
-          cordinates = [y,x],[y+1,x],[y+2,x]
+          cordinates = [y,x],[y+1,x]
         else
-          cordinates = [y,x],[y,x+1],[y,x+2]
+          cordinates = [y,x],[y,x+1]
         end
-        valid_3 = valid_ship_placement?(cordinates)
+        valid_2 = valid_ship_placement?(cordinates)
       end
-      args = {y:y,x:x,vertical:vertical,length:3}
-      ship_3 = @computer.board.make_ship(args)
-      @computer.board.place_ship(ship_3)
-
-      #Create and validate 2 long ship
-
-      ships_overlap = true
-      while ships_overlap
-        while !valid_2
-          y = rand(0..3)
-          x = rand(0..3)
-          vertical = [true, false].sample
-          if vertical
-            cordinates = [y,x],[y+1,x]
-          else
-            cordinates = [y,x],[y,x+1]
-          end
-          valid_2 = valid_ship_placement?(cordinates)
-        end
-        args = {y:y,x:x,vertical:vertical,length:2}
-        ship_2 = @computer.board.make_ship(args)
-        if !ships_collide?(ship_2,ship_3)
-          ships_overlap = false
-        end
+      args = {y:y,x:x,vertical:vertical,length:2}
+      ship_2 = @computer.board.make_ship(args)
+      if !ships_collide?(ship_2,ship_3)
+        ships_overlap = false
       end
+    end
     @computer.board.place_ship(ship_2)
-    p "I have laid out my ships on the grid."
   end
 
   def player_setup
 
-    p "You now need to layout your two ships."
-    p "The first is two units long and the"
-    p "second is three units long."
-    p "The grid has A1 at the top left and D4 at the bottom right."
+    puts "You now need to layout your two ships."
+    puts "The first is two units long and the"
+    puts "second is three units long."
+    puts "The grid has A1 at the top left and D4 at the bottom right."
 
     collide = true
     while collide
-      p "Enter the squares for the two-unit ship:"
+      puts "Enter the squares for the two-unit ship:"
       ship_2_args = interpret_cordinate_string(gets.chomp, 2)
       while !ship_2_args
-        p "Entry invalid. Enter the squares for the two-unit ship:"
+        puts "Entry invalid. Enter the squares for the two-unit ship:"
         ship_2_args = interpret_cordinate_string(gets.chomp, 2)
       end
 
-      p "Enter the squares for the three-unit ship:"
+      puts "Enter the squares for the three-unit ship:"
       ship_3_args = interpret_cordinate_string(gets.chomp, 3)
       while !ship_3_args
-        p "Entry invalid. Enter the squares for the three-unit ship:"
+        puts "Entry invalid. Enter the squares for the three-unit ship:"
         ship_3_args = interpret_cordinate_string(gets.chomp, 3)
       end
 
       ship_2 = @player.board.make_ship(ship_2_args)
       ship_3 = @player.board.make_ship(ship_3_args)
       if ships_collide?(ship_2, ship_3)
-        p "You've placed your ships on top of one another"
+        puts "You've placed your ships on top of one another"
       else
         collide = false
       end
@@ -202,20 +181,25 @@ class Game
   def valid_ship_placement?(cordinates)
     ship_length = cordinates.length
 
+
     #Check Duplicates
-    cordinates.each do |cordinate|
-      if !cordinates.one? { |c| c==cordinate }
-        return false
-      end
-    end
+    # cordinates.each do |cordinate|
+    #   if !cordinates.one? { |c| c==cordinate }
+    #     return false
+    #   end
+    # end
 
     #Ship doesnt hang off grid
-    cordinates.each do |cordinate|
-      if cordinate[0] > @player.board.slots.length - 1
-        return false
-      elsif cordinate[1] > @player.board.slots[0].length - 1
-        return false
-      end
+    # cordinates.each do |cordinate|
+    #   if cordinate[0] > @player.board.slots.length - 1
+    #     return false
+    #   elsif cordinate[1] > @player.board.slots[0].length - 1
+    #     return false
+    #   end
+    # end
+
+    if ship_hangs_off_grid?(cordinates) || cordinates_contain_duplicates?(cordinates)
+      return false
     end
 
     #Horizontal Case
@@ -241,5 +225,71 @@ class Game
     end
     return false
   end
+
+  private
+
+  def cordinates_contain_duplicates?(cordinates)
+    cordinates.each do |cordinate|
+      if !cordinates.one? { |c| c==cordinate }
+        return true
+      end
+    end
+    return false
+  end
+
+  def ship_hangs_off_grid?(cordinates)
+    cordinates.each do |cordinate|
+      if cordinate[0] > @player.board.slots.length - 1
+        return true
+      elsif cordinate[1] > @player.board.slots[0].length - 1
+        return true
+      end
+    end
+    return false
+  end
+
+  def generate_display_symbols(board)
+    @computer.board.slots.each do |row|
+      this_row = []
+      row.each do |slot|
+
+        if slot.guessed?
+          if @computer.board.ships.any? {|ship| ship.slots.include?(slot)}
+            this_row << " H "
+          else
+            this_row << " M "
+          end
+        else
+          this_row << " . "
+        end
+      end
+      board << this_row
+    end
+    return board
+  end
+
+  def draw_win
+    puts "=+=+=+=+=+=+="
+    puts "You've Won!"
+    puts "=+=+=+=+=+=+="
+  end
+
+  def draw_loss
+    puts "=+=+=+=+=+=+="
+    puts "You've Lost"
+    puts "=+=+=+=+=+=+="
+  end
+
+  def draw_image(board)
+    puts "========="
+    puts ".   1   2   3   4"
+    puts "A " + board[0].join(" ")
+    puts "B " + board[1].join(" ")
+    puts "C " + board[2].join(" ")
+    puts "D " + board[3].join(" ")
+    puts "========="
+    puts "\n"
+  end
+
 
 end

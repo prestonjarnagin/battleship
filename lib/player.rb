@@ -20,7 +20,7 @@ class Player
     if hit
       hit_sequence(enemy_board)
     else
-      p @name + ": Miss"
+      puts @name + ": Miss"
     end
   end
 
@@ -28,12 +28,12 @@ class Player
     sunk = enemy_board.ships.any? do |ship|
       ship.sunk?
     end
-    p "#{@name}: Hit!"
+    puts "#{@name}: Hit!"
     sink_sequence(enemy_board) if sunk
   end
 
   def sink_sequence(enemy_board)
-    p "#{@name} sunk an enemy ship"
+    puts "#{@name} sunk an enemy ship"
     endgame = enemy_board.ships.all? do |ship|
       ship.sunk?
     end
