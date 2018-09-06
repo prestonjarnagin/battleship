@@ -1,9 +1,7 @@
-require 'minitest/autorun'
-require 'minitest/pride'
-require './lib/slot'
+# require 'minitest/autorun'
+# require 'minitest/pride'
 require './test/test_helper'
-require 'simplecov'
-SimpleCov.start
+require './lib/slot'
 
 class SlotTest < Minitest::Test
 

@@ -1,11 +1,7 @@
-require 'minitest/autorun'
-require 'minitest/pride'
-require './lib/game'
-require './lib/board'
-require 'pry'
+# require 'minitest/autorun'
+# require 'minitest/pride'
 require './test/test_helper'
-require 'simplecov'
-SimpleCov.start
+require './lib/game'
 
 class GameTest < Minitest::Test
 
@@ -102,6 +98,5 @@ class GameTest < Minitest::Test
     ship_2 = board.make_ship({y:2,x:1,vertical:true,length:2})
     assert @game.ships_collide?(ship_1,ship_2)
   end
-
 
 end
