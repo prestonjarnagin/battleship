@@ -44,59 +44,47 @@ class Game
   end
 
   def computer_setup
-    valid_3 = false
-    valid_2 = false
-
-      ship_3 = generate_3_long_ship(valid_3)
-      generate_2_long_ship(ship_3,valid_2)
+      ship_3 = generate_and_validate_ship(3)
+      ship_2 = generate_and_validate_ship(2)
+      while ships_collide?(ship_2,ship_3)
+        ship_2 = generate_and_validate_ship(2)
+      end
+      @computer.board.place_ship(ship_3)
+      @computer.board.place_ship(ship_2)
 
     puts "I have laid out my ships on the grid."
   end
 
-  def generate_3_long_ship(valid_3)
-    #Create, validate, and place 3 long ship
-    while !valid_3
+  def generate_and_validate_ship(length)
+    ship_valid = false
+
+    cordinates = []
+    while !ship_valid
+      cordinates = []
+      i = 0
       y = rand(0..3)
       x = rand(0..3)
       vertical = [true, false].sample
       if vertical
-        cordinates = [y,x],[y+1,x],[y+2,x]
-      else
-        cordinates = [y,x],[y,x+1],[y,x+2]
-      end
-      valid_3 = valid_ship_placement?(cordinates)
-    end
-    args = {y:y,x:x,vertical:vertical,length:3}
-    ship_3 = @computer.board.make_ship(args)
-    @computer.board.place_ship(ship_3)
-    return ship_3
-  end
-
-  def generate_2_long_ship(ship_3, valid_2)
-    ships_overlap = true
-    while ships_overlap
-      while !valid_2
-        y = rand(0..3)
-        x = rand(0..3)
-        vertical = [true, false].sample
-        if vertical
-          cordinates = [y,x],[y+1,x]
-        else
-          cordinates = [y,x],[y,x+1]
+        while i < length
+          cordinates << [y+i,x]
+          i += 1
         end
-        valid_2 = valid_ship_placement?(cordinates)
+      else
+        while i < length
+          cordinates << [y,x+i]
+          i += 1
+        end
       end
-      args = {y:y,x:x,vertical:vertical,length:2}
-      ship_2 = @computer.board.make_ship(args)
-      if !ships_collide?(ship_2,ship_3)
-        ships_overlap = false
-      end
+      ship_valid = true if valid_ship_placement?(cordinates)
+      args = {y:y,x:x,vertical:vertical,length:length}
     end
-    @computer.board.place_ship(ship_2)
+    return @computer.board.make_ship(args)
   end
 
   def player_setup
 
+    puts "\n"
     puts "You now need to layout your two ships."
     puts "The first is two units long and the"
     puts "second is three units long."
@@ -180,23 +168,6 @@ class Game
 
   def valid_ship_placement?(cordinates)
     ship_length = cordinates.length
-
-
-    #Check Duplicates
-    # cordinates.each do |cordinate|
-    #   if !cordinates.one? { |c| c==cordinate }
-    #     return false
-    #   end
-    # end
-
-    #Ship doesnt hang off grid
-    # cordinates.each do |cordinate|
-    #   if cordinate[0] > @player.board.slots.length - 1
-    #     return false
-    #   elsif cordinate[1] > @player.board.slots[0].length - 1
-    #     return false
-    #   end
-    # end
 
     if ship_hangs_off_grid?(cordinates) || cordinates_contain_duplicates?(cordinates)
       return false

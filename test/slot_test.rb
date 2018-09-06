@@ -1,7 +1,7 @@
 # require 'minitest/autorun'
 # require 'minitest/pride'
-require './lib/slot'
 require './test/test_helper'
+require './lib/slot'
 
 class SlotTest < Minitest::Test
 

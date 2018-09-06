@@ -1,7 +1,7 @@
 # require 'minitest/autorun'
 # require 'minitest/pride'
-require './lib/player'
 require './test/test_helper'
+require './lib/player'
 
 
 class PlayerTest < Minitest::Test

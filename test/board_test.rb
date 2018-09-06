@@ -1,7 +1,7 @@
 # require 'minitest/autorun'
 # require 'minitest/pride'
-require './lib/board'
 require './test/test_helper'
+require './lib/board'
 
 class BoardTest < Minitest::Test
 
