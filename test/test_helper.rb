@@ -1,5 +1,10 @@
 require 'simplecov'            # These two lines must go first
-SimpleCov.start
+SimpleCov.start do
+  add_filter "/test/"
+end
 
-require 'minitest/autorun'     # Sets up minitest
                                # You could require other shared gems here, too
+                               # Sets up minitest
+
+require 'minitest/autorun'
+require 'minitest/pride'

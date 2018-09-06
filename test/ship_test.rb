@@ -1,5 +1,5 @@
-require 'minitest/autorun'
-require 'minitest/pride'
+# require 'minitest/autorun'
+# require 'minitest/pride'
 require './lib/ship'
 require './lib/slot'
 require './test/test_helper'

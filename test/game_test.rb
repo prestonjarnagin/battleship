@@ -1,5 +1,5 @@
-require 'minitest/autorun'
-require 'minitest/pride'
+# require 'minitest/autorun'
+# require 'minitest/pride'
 require './lib/game'
 require './test/test_helper'
 
